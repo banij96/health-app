@@ -682,9 +682,9 @@ function renderToday(){
 
   // Meals
   const meals=[
-    {type:'Breakfast',key:'b_'+ds,n:BRK.n,c:BRK.c,p:BRK.p,carb:BRK.carb,time:'7:45am',icon:ICONS.apple},
-    {type:'Lunch',    key:'l_'+ds,n:lun.n,c:lun.c,p:lun.p,carb:lun.carb,time:'12:30pm',icon:ICONS.bowl},
-    {type:'Dinner',   key:'d_'+ds,n:m.n,  c:m.c,  p:m.p,  carb:m.carb,  time:'7:00pm', icon:ICONS.plate},
+    {type:'Breakfast',key:'b_'+ds,n:BRK.n,c:BRK.c,p:BRK.p,carb:BRK.carb,icon:ICONS.apple},
+    {type:'Lunch',    key:'l_'+ds,n:lun.n,c:lun.c,p:lun.p,carb:lun.carb,icon:ICONS.bowl},
+    {type:'Dinner',   key:'d_'+ds,n:m.n,  c:m.c,  p:m.p,  carb:m.carb,  icon:ICONS.plate},
   ];
   const mw=document.getElementById('today-meals');mw.innerHTML='';
 
@@ -733,7 +733,7 @@ function renderToday(){
     } else {
       // Simple card (breakfast, weekday lunch)
       const card=document.createElement('div');card.className='meal-card fi'+(isDone?' done':'');card.style.animationDelay=(mi*.04)+'s';
-      card.innerHTML=`<div class="meal-top"><div class="meal-icon-wrap">${ml.icon}</div><div class="meal-info"><div class="meal-type">${ml.type}</div><div class="meal-name">${ml.n}</div><div class="meal-time">⏰ ${ml.time}</div></div><button class="check${isDone?' on':''}" onclick="togMeal('${ml.key}',this)">${isDone?'✓':''}</button></div><div class="meal-macros"><div class="mac"><div class="mac-v">${ml.c}</div><div class="mac-l">kcal</div></div><div class="mac"><div class="mac-v">${ml.p}g</div><div class="mac-l">protein</div></div><div class="mac"><div class="mac-v">${ml.carb}g</div><div class="mac-l">carbs</div></div></div>`;
+      card.innerHTML=`<div class="meal-top"><div class="meal-icon-wrap">${ml.icon}</div><div class="meal-info"><div class="meal-type">${ml.type}</div><div class="meal-name">${ml.n}</div></div><button class="check${isDone?' on':''}" onclick="togMeal('${ml.key}',this)">${isDone?'✓':''}</button></div><div class="meal-macros"><div class="mac"><div class="mac-v">${ml.c}</div><div class="mac-l">kcal</div></div><div class="mac"><div class="mac-v">${ml.p}g</div><div class="mac-l">protein</div></div><div class="mac"><div class="mac-v">${ml.carb}g</div><div class="mac-l">carbs</div></div></div>`;
       mw.appendChild(card);
     }
   });
