@@ -310,6 +310,10 @@ html,body{height:100%;background:var(--bg);font-family:'Karla',sans-serif;color:
       <div class="col-card"><div class="col-card-body" id="today-workout-col"></div></div>
     </div>
     <div class="sec" style="margin-top:6px">
+      <div class="sec-lbl">Daily tasks</div>
+      <div class="col-card"><div class="col-card-body" id="today-daily-tasks"></div></div>
+    </div>
+    <div class="sec" style="margin-top:6px">
       <div class="sec-lbl" style="display:flex;justify-content:space-between;align-items:center">
         <span>To Do</span>
         <button onclick="showView('todo')" style="background:none;border:none;font-size:11px;color:var(--accent);cursor:pointer;font-family:'Karla',sans-serif;font-weight:600">See all</button>
@@ -474,71 +478,78 @@ const RECIPES=[
 
 const GYM_PLAN=[
   {week:1,day:'Mon',label:'Upper — Push',focus:'Chest, shoulders, triceps',exercises:[
-    {name:'Barbell Bench Press',sets:4,reps:'8–10',rest:'90s',note:'Keep shoulder blades back'},
-    {name:'Dumbbell Shoulder Press',sets:3,reps:'10–12',rest:'75s',note:'Controlled descent'},
-    {name:'Cable Chest Fly',sets:3,reps:'12–15',rest:'60s',note:'Squeeze at midpoint'},
-    {name:'Lateral Raises',sets:3,reps:'15',rest:'60s',note:'Light weight, strict form'},
-    {name:'Tricep Pushdown',sets:3,reps:'12–15',rest:'60s',note:'Elbows pinned to sides'},
+    {name:'Chest Press Machine',sets:4,reps:'8–10',rest:'90s',note:'Full range, squeeze at the top'},
+    {name:'Dumbbell Shoulder Press',sets:3,reps:'10–12',rest:'75s',note:'Seated or standing — controlled descent'},
+    {name:'Dumbbell Lateral Raises',sets:3,reps:'15',rest:'60s',note:'Light, strict form — no swinging'},
+    {name:'Dips',sets:3,reps:'8–12',rest:'75s',note:'Lean forward slightly for chest focus'},
+    {name:'Dumbbell Skull Crushers',sets:3,reps:'12',rest:'60s',note:'Lie on mat, control the weight down'},
   ]},
-  {week:1,day:'Tue',label:'Cardio',focus:'Steady state + core',cardio:true,exercises:[
-    {name:'Brisk walk or jog',sets:1,reps:'30 min',rest:'-',note:'Zone 2 — comfortable pace, can hold a conversation'},
-    {name:'Incline treadmill walk',sets:1,reps:'15 min',rest:'-',note:'Incline 8–12%, burns fat effectively'},
-    {name:'Plank',sets:3,reps:'45s',rest:'30s',note:'Core stability — squeeze glutes throughout'},
-    {name:'Dead bug',sets:3,reps:'10 each side',rest:'30s',note:'Slow and controlled, lower back stays flat'},
+  {week:1,day:'Tue',label:'Cardio',focus:'Rowing + core',cardio:true,exercises:[
+    {name:'Rowing machine',sets:1,reps:'20 min',rest:'-',note:'Steady pace — drive with legs, pull to chest'},
+    {name:'Cycling machine',sets:1,reps:'15 min',rest:'-',note:'Moderate resistance, consistent cadence'},
+    {name:'Plank',sets:3,reps:'45s',rest:'30s',note:'Core — squeeze glutes, keep hips level'},
+    {name:'Dead bug',sets:3,reps:'10 each side',rest:'30s',note:'Lower back stays flat on mat'},
   ]},
   {week:1,day:'Wed',label:'Lower Body',focus:'Quads, hamstrings, glutes',exercises:[
-    {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'Break parallel if possible'},
-    {name:'Romanian Deadlift',sets:3,reps:'10–12',rest:'90s',note:'Feel hamstring stretch'},
-    {name:'Leg Press',sets:3,reps:'12–15',rest:'75s',note:'Full range of motion'},
-    {name:'Leg Curl',sets:3,reps:'12–15',rest:'60s',note:'Slow eccentric'},
-    {name:'Calf Raises',sets:4,reps:'15–20',rest:'45s',note:'Pause at the top'},
+    {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'No rack — clean to shoulders first, or goblet style'},
+    {name:'Leg Curl Machine',sets:3,reps:'12–15',rest:'75s',note:'Slow eccentric — feel the hamstring'},
+    {name:'Dumbbell Romanian Deadlift',sets:3,reps:'10–12',rest:'90s',note:'Hinge at hips, feel the stretch'},
+    {name:'Dumbbell Goblet Squat',sets:3,reps:'15',rest:'60s',note:'Hold one dumbbell at chest, full depth'},
+    {name:'Dumbbell Calf Raises',sets:4,reps:'15–20',rest:'45s',note:'Pause at top, hold dumbbells for load'},
   ]},
-  {week:1,day:'Thu',label:'Cardio',focus:'HIIT + mobility',cardio:true,exercises:[
-    {name:'HIIT intervals',sets:8,reps:'20s on / 40s off',rest:'-',note:'Sprint or bike — max effort on, full rest off'},
-    {name:'Jump rope or star jumps',sets:3,reps:'1 min',rest:'30s',note:'Keep it light after HIIT'},
-    {name:'Hip flexor stretch',sets:2,reps:'45s each side',rest:'-',note:'Hold deep lunge stretch'},
-    {name:'Foam roll legs',sets:1,reps:'5 min',rest:'-',note:'Quads, hamstrings, glutes — slow rolls'},
+  {week:1,day:'Thu',label:'Cardio',focus:'HIIT cycling + mobility',cardio:true,exercises:[
+    {name:'Cycling HIIT',sets:8,reps:'30s hard / 60s easy',rest:'-',note:'Max effort on intervals, high resistance'},
+    {name:'Rowing sprint',sets:4,reps:'250m',rest:'90s',note:'All out effort each rep'},
+    {name:'Hip flexor stretch',sets:2,reps:'45s each side',rest:'-',note:'Deep lunge hold'},
+    {name:'Foam roll / mat stretch',sets:1,reps:'8 min',rest:'-',note:'Quads, hamstrings, glutes, back'},
   ]},
   {week:1,day:'Fri',label:'Upper — Pull',focus:'Back, biceps',exercises:[
-    {name:'Deadlift',sets:3,reps:'5',rest:'2 min',note:'Neutral spine throughout'},
-    {name:'Lat Pulldown',sets:4,reps:'10–12',rest:'75s',note:'Drive elbows to hips'},
-    {name:'Seated Cable Row',sets:3,reps:'10–12',rest:'75s',note:'Squeeze shoulder blades'},
-    {name:'Face Pulls',sets:3,reps:'15',rest:'60s',note:'Great for shoulder health'},
-    {name:'Barbell Curl',sets:3,reps:'10–12',rest:'60s',note:'No swinging'},
+    {name:'Lat Pulldown Machine',sets:4,reps:'10–12',rest:'75s',note:'Drive elbows down to hips — not a bicep curl'},
+    {name:'Pull-Ups',sets:3,reps:'max',rest:'90s',note:'Use the pull-up bar — full range'},
+    {name:'Dumbbell Row',sets:3,reps:'10–12',rest:'75s',note:'Each side — elbow drives back, not up'},
+    {name:'Rowing machine',sets:1,reps:'5 min',rest:'-',note:'Cool-down pace — focus on form'},
+    {name:'Dumbbell Bicep Curl',sets:3,reps:'10–12',rest:'60s',note:'No swinging — slow and controlled'},
   ]},
   {week:2,day:'Mon',label:'Upper — Push+',focus:'Progressive overload',exercises:[
-    {name:'Barbell Bench Press',sets:4,reps:'6–8',rest:'90s',note:'Add 2.5kg from week 1'},
-    {name:'Incline Dumbbell Press',sets:3,reps:'10–12',rest:'75s',note:'Upper chest emphasis'},
-    {name:'Cable Chest Fly',sets:3,reps:'12–15',rest:'60s',note:'Heavier than week 1'},
-    {name:'Arnold Press',sets:3,reps:'10',rest:'75s',note:'Full rotation at top'},
-    {name:'Skull Crushers',sets:3,reps:'10–12',rest:'60s',note:'Control the weight'},
+    {name:'Chest Press Machine',sets:4,reps:'6–8',rest:'90s',note:'Increase weight from week 1'},
+    {name:'Dumbbell Arnold Press',sets:3,reps:'10',rest:'75s',note:'Full rotation at top, slow down'},
+    {name:'Dumbbell Lateral Raises',sets:3,reps:'15',rest:'60s',note:'Heavier than week 1 if form is good'},
+    {name:'Dips',sets:4,reps:'10–12',rest:'75s',note:'1 extra set — full depth'},
+    {name:'Dumbbell Tricep Overhead Extension',sets:3,reps:'12',rest:'60s',note:'Both hands on one dumbbell overhead'},
   ]},
-  {week:2,day:'Tue',label:'Cardio',focus:'Endurance + core',cardio:true,exercises:[
-    {name:'Outdoor run or cycle',sets:1,reps:'35 min',rest:'-',note:'Slightly longer than week 1 — push the pace a little'},
-    {name:'Plank to shoulder tap',sets:3,reps:'12 each side',rest:'30s',note:'Keep hips square, minimal rotation'},
-    {name:'Bicycle crunches',sets:3,reps:'20 each side',rest:'30s',note:'Slow and deliberate'},
-    {name:'Mountain climbers',sets:3,reps:'30s',rest:'30s',note:'Drive knees in fast — cardio finisher'},
+  {week:2,day:'Tue',label:'Cardio',focus:'Rowing endurance + core',cardio:true,exercises:[
+    {name:'Rowing machine',sets:1,reps:'25 min',rest:'-',note:'5 min longer than week 1 — keep form'},
+    {name:'Cycling machine',sets:1,reps:'10 min',rest:'-',note:'Higher resistance than week 1'},
+    {name:'Plank to shoulder tap',sets:3,reps:'12 each side',rest:'30s',note:'Keep hips still'},
+    {name:'Bicycle crunches',sets:3,reps:'20 each side',rest:'30s',note:'Slow and deliberate — no rushing'},
+    {name:'Mountain climbers',sets:3,reps:'30s',rest:'30s',note:'Fast feet — cardio finisher'},
   ]},
   {week:2,day:'Wed',label:'Lower Body+',focus:'Progressive overload',exercises:[
-    {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'Add 2.5–5kg from week 1'},
-    {name:'Bulgarian Split Squat',sets:3,reps:'8–10',rest:'90s',note:'Each leg'},
-    {name:'Leg Press',sets:3,reps:'12–15',rest:'75s',note:'Heavier than week 1'},
-    {name:'Nordic Curl',sets:3,reps:'6–8',rest:'90s',note:'Excellent for hamstrings'},
-    {name:'Calf Raises',sets:4,reps:'15–20',rest:'45s',note:'Add weight if too easy'},
+    {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'Add weight from week 1'},
+    {name:'Leg Curl Machine',sets:4,reps:'12–15',rest:'75s',note:'1 extra set — heavier if possible'},
+    {name:'Dumbbell Romanian Deadlift',sets:3,reps:'10–12',rest:'90s',note:'Heavier dumbbells than week 1'},
+    {name:'Dumbbell Reverse Lunge',sets:3,reps:'10 each leg',rest:'75s',note:'Step back, knee hovers above floor'},
+    {name:'Dumbbell Calf Raises',sets:4,reps:'20',rest:'45s',note:'Heavier than week 1'},
   ]},
-  {week:2,day:'Thu',label:'Cardio',focus:'HIIT + stretch',cardio:true,exercises:[
-    {name:'HIIT intervals',sets:10,reps:'20s on / 40s off',rest:'-',note:'2 more rounds than week 1 — push harder'},
-    {name:'Box jumps or squat jumps',sets:3,reps:'10',rest:'45s',note:'Land soft, full squat depth'},
+  {week:2,day:'Thu',label:'Cardio',focus:'HIIT rowing + stretch',cardio:true,exercises:[
+    {name:'Rowing HIIT',sets:6,reps:'500m hard',rest:'90s',note:'All out — note your time each rep'},
+    {name:'Cycling machine',sets:1,reps:'10 min',rest:'-',note:'Steady state after the rowing'},
     {name:'Full body stretch',sets:1,reps:'10 min',rest:'-',note:'Hamstrings, chest, shoulders, hips'},
-    {name:'Foam roll full body',sets:1,reps:'5 min',rest:'-',note:'Recovery focus — back, legs, lats'},
+    {name:'Mat core circuit',sets:2,reps:'5 min',rest:'60s',note:'Mix of planks, dead bugs, leg raises'},
   ]},
   {week:2,day:'Fri',label:'Full Body',focus:'Compound movements',exercises:[
-    {name:'Deadlift',sets:4,reps:'5',rest:'2 min',note:'Add 2.5–5kg from week 1'},
-    {name:'Pull-Ups / Assisted',sets:3,reps:'8–10',rest:'90s',note:'Use assist if needed'},
-    {name:'Dumbbell Row',sets:3,reps:'10–12',rest:'75s',note:'Each side'},
-    {name:'Goblet Squat',sets:3,reps:'12',rest:'60s',note:'Good for mobility too'},
-    {name:'Plank',sets:3,reps:'45–60s',rest:'45s',note:'Core stability'},
+    {name:'Pull-Ups',sets:4,reps:'max',rest:'90s',note:'More sets than week 1 — track total reps'},
+    {name:'Chest Press Machine',sets:3,reps:'10',rest:'75s',note:'Moderate weight — full range'},
+    {name:'Barbell Deadlift',sets:4,reps:'5',rest:'2 min',note:'Heaviest lift of the week — neutral spine'},
+    {name:'Dumbbell Row',sets:3,reps:'12',rest:'75s',note:'Each side — squeeze at top'},
+    {name:'Plank',sets:3,reps:'60s',rest:'45s',note:'Longer hold than week 1'},
   ]},
+];
+// ── DAILY TASKS ────────────────────────────────────
+const DAILY_TASKS=[
+  {id:'dt-duolingo', title:'Duolingo',        colour:'blue'},
+  {id:'dt-guitar',   title:'Guitar practice', colour:'warm'},
+  {id:'dt-project',  title:'Personal project',colour:'purple'},
 ];
 
 // ── DATE HELPERS ───────────────────────────────────
@@ -600,12 +611,17 @@ function getDayCompletionRatio(date){
   if(daysSince<0||daysSince>13) return 0;
   const ds=dateStr(date);
   const mKeys=['b_'+ds,'l_'+ds,'d_'+ds];
-  // Count todos done on this day
   const todosOnDay=todos.filter(t=>t.doneDate===ds);
-  const total=mKeys.length+todosOnDay.length;
+  const dtKeys=DAILY_TASKS.map(t=>t.id+'_'+ds);
+  // Water counts as done if >=5 glasses
+  const waterKey='hp_water_'+ds;
+  const waterVal=gs(waterKey,0);
+  const total=mKeys.length+todosOnDay.length+dtKeys.length+1; // +1 for water
   if(total===0) return 0;
   let done=mKeys.filter(k=>!!doneMeals[k]).length;
   done+=todosOnDay.filter(t=>t.done).length;
+  done+=dtKeys.filter(k=>!!doneItems[k]).length;
+  done+=waterVal>=5?1:0;
   return done/total;
 }
 
@@ -666,11 +682,31 @@ function renderCalDayEvents(){
   hdr.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--ink)">${DF[dow]}, ${date.getDate()} ${MS[date.getMonth()]}</div><button onclick="openDayInToday()" style="background:var(--acc-lt);border:1px solid var(--accent);border-radius:8px;padding:4px 10px;font-family:'Karla',sans-serif;font-size:12px;color:var(--accent);cursor:pointer">View day →</button>`;
   cont.appendChild(hdr);
 
+  // Water
+  const waterVal=gs('hp_water_'+ds,0);
+  const wRow=document.createElement('div');wRow.className='cal-ev-row';
+  const wFill=Math.min(5,waterVal);
+  const glasses='◉'.repeat(wFill)+'○'.repeat(5-wFill);
+  wRow.innerHTML=`<div class="cal-ev-dot" style="background:${waterVal>=5?'var(--blue)':'var(--border)'}"></div><div class="cal-ev-name" style="display:flex;align-items:center;gap:8px">Water <span style="font-size:13px;letter-spacing:2px;color:${waterVal>=5?'var(--blue)':'var(--ink3)'}">${glasses}</span></div><div style="font-size:11px;color:var(--ink3)">${waterVal}/5</div>`;
+  cont.appendChild(wRow);
+
   // Meals with tickboxes
   [{label:'Breakfast',name:BRK.n,key:'b_'+ds},{label:'Lunch',name:lun.n,key:'l_'+ds},{label:'Dinner',name:m.n,key:'d_'+ds}].forEach(ml=>{
     const done=!!doneMeals[ml.key];
     const row=document.createElement('div');row.className='cal-ev-row';
     row.innerHTML=`<div class="cal-ev-dot" style="background:${done?'var(--accent)':'var(--border)'}"></div><div class="cal-ev-name">${ml.label} — ${ml.name}</div><button onclick="togMealCal('${ml.key}',this)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid ${done?'var(--accent)':'var(--border)'};background:${done?'var(--accent)':'transparent'};cursor:pointer;font-size:11px;color:${done?'#fff':'transparent'};flex-shrink:0;display:flex;align-items:center;justify-content:center">${done?'✓':''}</button>`;
+    cont.appendChild(row);
+  });
+
+  // Daily tasks with tickboxes
+  const dtHdr=document.createElement('div');
+  dtHdr.style='font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3);padding:8px 0 4px;';
+  dtHdr.textContent='Daily tasks';cont.appendChild(dtHdr);
+  DAILY_TASKS.forEach(t=>{
+    const key=t.id+'_'+ds;
+    const isDone=!!doneItems[key];
+    const row=document.createElement('div');row.className='cal-ev-row';
+    row.innerHTML=`<div class="cal-ev-dot" style="background:${isDone?C_DOT[t.colour]:'var(--border)'}"></div><div class="cal-ev-name">${t.title}</div><button onclick="togDailyTaskCal('${key}',this)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid ${isDone?C_DOT[t.colour]:'var(--border)'};background:${isDone?C_DOT[t.colour]:'transparent'};cursor:pointer;font-size:11px;color:${isDone?'#fff':'transparent'};flex-shrink:0;display:flex;align-items:center;justify-content:center">${isDone?'✓':''}</button>`;
     cont.appendChild(row);
   });
 
@@ -841,6 +877,18 @@ function renderToday(){
     wc.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0">Rest day — Sat & Sun</div>';
   }
 
+  // Daily tasks
+  const dtw=document.getElementById('today-daily-tasks');if(dtw){dtw.innerHTML='';
+  let allDtDone=true;
+  DAILY_TASKS.forEach(t=>{
+    const key=t.id+'_'+ds;
+    const isDone=!!doneItems[key];
+    if(!isDone) allDtDone=false;
+    const row=document.createElement('div');row.className='mini-item'+(isDone?' done':'');
+    row.innerHTML=`<div class="mini-dot" style="background:${C_DOT[t.colour]||'#999'}"></div><div class="mini-title">${t.title}</div><button class="mini-check${isDone?' on':''}" onclick="togDailyTask('${key}',this)">${isDone?'✓':''}</button>`;
+    dtw.appendChild(row);
+  });}
+
   // Todos preview (pending only, max 3)
   const tw=document.getElementById('today-todos');tw.innerHTML='';
   const pending=todos.filter(t=>!t.done);
@@ -905,6 +953,24 @@ function openDayInToday(){
 
 function togExercise(key,btn){
   renderToday();
+}
+
+function togDailyTask(key,btn){
+  doneItems[key]=!doneItems[key];ss('hp_done_items',doneItems);
+  btn.classList.toggle('on');btn.textContent=btn.classList.contains('on')?'✓':'';
+  btn.classList.add('pop');setTimeout(()=>btn.classList.remove('pop'),300);
+  btn.closest('.mini-item').classList.toggle('done',doneItems[key]);
+  if(document.querySelector('#view-cal.active')) renderCalendar();
+}
+
+function togDailyTaskCal(key,btn){
+  doneItems[key]=!doneItems[key];ss('hp_done_items',doneItems);
+  const isDone=doneItems[key];
+  btn.style.background=isDone?'var(--blue)':'transparent';
+  btn.style.borderColor=isDone?'var(--blue)':'var(--border)';
+  btn.style.color=isDone?'#fff':'transparent';
+  btn.textContent=isDone?'✓':'';
+  renderCalendar();
 }
 
 function tapGlass(i){water=(water===i+1)?i:i+1;ss('hp_water_'+todayStr(),water);renderToday();}
