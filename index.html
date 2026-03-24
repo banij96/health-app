@@ -480,12 +480,24 @@ const GYM_PLAN=[
     {name:'Lateral Raises',sets:3,reps:'15',rest:'60s',note:'Light weight, strict form'},
     {name:'Tricep Pushdown',sets:3,reps:'12–15',rest:'60s',note:'Elbows pinned to sides'},
   ]},
+  {week:1,day:'Tue',label:'Cardio',focus:'Steady state + core',cardio:true,exercises:[
+    {name:'Brisk walk or jog',sets:1,reps:'30 min',rest:'-',note:'Zone 2 — comfortable pace, can hold a conversation'},
+    {name:'Incline treadmill walk',sets:1,reps:'15 min',rest:'-',note:'Incline 8–12%, burns fat effectively'},
+    {name:'Plank',sets:3,reps:'45s',rest:'30s',note:'Core stability — squeeze glutes throughout'},
+    {name:'Dead bug',sets:3,reps:'10 each side',rest:'30s',note:'Slow and controlled, lower back stays flat'},
+  ]},
   {week:1,day:'Wed',label:'Lower Body',focus:'Quads, hamstrings, glutes',exercises:[
     {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'Break parallel if possible'},
     {name:'Romanian Deadlift',sets:3,reps:'10–12',rest:'90s',note:'Feel hamstring stretch'},
     {name:'Leg Press',sets:3,reps:'12–15',rest:'75s',note:'Full range of motion'},
     {name:'Leg Curl',sets:3,reps:'12–15',rest:'60s',note:'Slow eccentric'},
     {name:'Calf Raises',sets:4,reps:'15–20',rest:'45s',note:'Pause at the top'},
+  ]},
+  {week:1,day:'Thu',label:'Cardio',focus:'HIIT + mobility',cardio:true,exercises:[
+    {name:'HIIT intervals',sets:8,reps:'20s on / 40s off',rest:'-',note:'Sprint or bike — max effort on, full rest off'},
+    {name:'Jump rope or star jumps',sets:3,reps:'1 min',rest:'30s',note:'Keep it light after HIIT'},
+    {name:'Hip flexor stretch',sets:2,reps:'45s each side',rest:'-',note:'Hold deep lunge stretch'},
+    {name:'Foam roll legs',sets:1,reps:'5 min',rest:'-',note:'Quads, hamstrings, glutes — slow rolls'},
   ]},
   {week:1,day:'Fri',label:'Upper — Pull',focus:'Back, biceps',exercises:[
     {name:'Deadlift',sets:3,reps:'5',rest:'2 min',note:'Neutral spine throughout'},
@@ -501,12 +513,24 @@ const GYM_PLAN=[
     {name:'Arnold Press',sets:3,reps:'10',rest:'75s',note:'Full rotation at top'},
     {name:'Skull Crushers',sets:3,reps:'10–12',rest:'60s',note:'Control the weight'},
   ]},
+  {week:2,day:'Tue',label:'Cardio',focus:'Endurance + core',cardio:true,exercises:[
+    {name:'Outdoor run or cycle',sets:1,reps:'35 min',rest:'-',note:'Slightly longer than week 1 — push the pace a little'},
+    {name:'Plank to shoulder tap',sets:3,reps:'12 each side',rest:'30s',note:'Keep hips square, minimal rotation'},
+    {name:'Bicycle crunches',sets:3,reps:'20 each side',rest:'30s',note:'Slow and deliberate'},
+    {name:'Mountain climbers',sets:3,reps:'30s',rest:'30s',note:'Drive knees in fast — cardio finisher'},
+  ]},
   {week:2,day:'Wed',label:'Lower Body+',focus:'Progressive overload',exercises:[
     {name:'Barbell Back Squat',sets:4,reps:'6–8',rest:'2 min',note:'Add 2.5–5kg from week 1'},
     {name:'Bulgarian Split Squat',sets:3,reps:'8–10',rest:'90s',note:'Each leg'},
     {name:'Leg Press',sets:3,reps:'12–15',rest:'75s',note:'Heavier than week 1'},
     {name:'Nordic Curl',sets:3,reps:'6–8',rest:'90s',note:'Excellent for hamstrings'},
     {name:'Calf Raises',sets:4,reps:'15–20',rest:'45s',note:'Add weight if too easy'},
+  ]},
+  {week:2,day:'Thu',label:'Cardio',focus:'HIIT + stretch',cardio:true,exercises:[
+    {name:'HIIT intervals',sets:10,reps:'20s on / 40s off',rest:'-',note:'2 more rounds than week 1 — push harder'},
+    {name:'Box jumps or squat jumps',sets:3,reps:'10',rest:'45s',note:'Land soft, full squat depth'},
+    {name:'Full body stretch',sets:1,reps:'10 min',rest:'-',note:'Hamstrings, chest, shoulders, hips'},
+    {name:'Foam roll full body',sets:1,reps:'5 min',rest:'-',note:'Recovery focus — back, legs, lats'},
   ]},
   {week:2,day:'Fri',label:'Full Body',focus:'Compound movements',exercises:[
     {name:'Deadlift',sets:4,reps:'5',rest:'2 min',note:'Add 2.5–5kg from week 1'},
@@ -629,24 +653,57 @@ function renderCalDayEvents(){
   const cont=document.getElementById('cal-day-events');if(!cont)return;
   const date=calSelDate;
   const ds=dateStr(date);
-  cont.innerHTML=`<div style="padding:10px 0 6px;font-family:'Playfair Display',serif;font-size:15px;color:var(--ink)">${DF[date.getDay()]}, ${date.getDate()} ${MS[date.getMonth()]}</div>`;
   const idx=planIdx(date);
   const m=MEALS_DATA[idx];
   const lun=getLunch(date);
-  // Show meals for that day
+  const dow=date.getDay();
+  const isGymDay=['1','3','5'].includes(String(dow));
+  cont.innerHTML='';
+
+  // Header with View day button
+  const hdr=document.createElement('div');
+  hdr.style='display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;';
+  hdr.innerHTML=`<div style="font-family:'Playfair Display',serif;font-size:15px;color:var(--ink)">${DF[dow]}, ${date.getDate()} ${MS[date.getMonth()]}</div><button onclick="openDayInToday()" style="background:var(--acc-lt);border:1px solid var(--accent);border-radius:8px;padding:4px 10px;font-family:'Karla',sans-serif;font-size:12px;color:var(--accent);cursor:pointer">View day →</button>`;
+  cont.appendChild(hdr);
+
+  // Meals with tickboxes
   [{label:'Breakfast',name:BRK.n,key:'b_'+ds},{label:'Lunch',name:lun.n,key:'l_'+ds},{label:'Dinner',name:m.n,key:'d_'+ds}].forEach(ml=>{
     const done=!!doneMeals[ml.key];
     const row=document.createElement('div');row.className='cal-ev-row';
-    row.innerHTML=`<div class="cal-ev-dot" style="background:${done?'var(--accent)':'var(--border)'}"></div><div class="cal-ev-name">${ml.label} — ${ml.name}</div><div style="font-size:11px;color:${done?'var(--accent)':'var(--ink3)'}">${done?'✓':'·'}</div>`;
+    row.innerHTML=`<div class="cal-ev-dot" style="background:${done?'var(--accent)':'var(--border)'}"></div><div class="cal-ev-name">${ml.label} — ${ml.name}</div><button onclick="togMealCal('${ml.key}',this)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid ${done?'var(--accent)':'var(--border)'};background:${done?'var(--accent)':'transparent'};cursor:pointer;font-size:11px;color:${done?'#fff':'transparent'};flex-shrink:0;display:flex;align-items:center;justify-content:center">${done?'✓':''}</button>`;
     cont.appendChild(row);
   });
-  // Show todos done that day
+
+  // Workout if gym day
+  if(isGymDay||['2','4'].includes(String(dow))){
+    const planDay=idx<7?1:2;
+    const session=GYM_PLAN.find(s=>s.week===planDay&&s.day===DS[dow]);
+    if(session){
+      const wHdr=document.createElement('div');
+      wHdr.style='font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3);padding:8px 0 4px;';
+      wHdr.textContent='Workout — '+session.label;cont.appendChild(wHdr);
+      session.exercises.forEach(ex=>{
+        const key='ex_'+ex.name.replace(/\W/g,'_')+'_'+ds;
+        const isDone=!!doneItems[key];
+        const row=document.createElement('div');row.className='cal-ev-row';
+        row.innerHTML=`<div class="cal-ev-dot" style="background:${isDone?'var(--purple)':'var(--border)'}"></div><div class="cal-ev-name">${ex.name} <span style="color:var(--ink3);font-size:10px">${ex.sets}×${ex.reps}</span></div><button onclick="togExerciseCal('${key}',this)" style="width:24px;height:24px;border-radius:50%;border:1.5px solid ${isDone?'var(--purple)':'var(--border)'};background:${isDone?'var(--purple)':'transparent'};cursor:pointer;font-size:11px;color:${isDone?'#fff':'transparent'};flex-shrink:0;display:flex;align-items:center;justify-content:center">${isDone?'✓':''}</button>`;
+        cont.appendChild(row);
+      });
+    }
+  }
+
+  // Completed todos
   const doneTodos=todos.filter(t=>t.doneDate===ds&&t.done);
-  doneTodos.forEach(t=>{
-    const row=document.createElement('div');row.className='cal-ev-row';
-    row.innerHTML=`<div class="cal-ev-dot" style="background:${C_DOT[t.colour]||'var(--accent)'}"></div><div class="cal-ev-name" style="text-decoration:line-through;color:var(--ink3)">${t.title}</div><div style="font-size:11px;color:var(--accent)">✓</div>`;
-    cont.appendChild(row);
-  });
+  if(doneTodos.length){
+    const tHdr=document.createElement('div');
+    tHdr.style='font-size:10px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--ink3);padding:8px 0 4px;';
+    tHdr.textContent='Completed items';cont.appendChild(tHdr);
+    doneTodos.forEach(t=>{
+      const row=document.createElement('div');row.className='cal-ev-row';
+      row.innerHTML=`<div class="cal-ev-dot" style="background:${C_DOT[t.colour]||'var(--accent)'}"></div><div class="cal-ev-name" style="text-decoration:line-through;color:var(--ink3)">${t.title}</div><div style="font-size:11px;color:var(--accent)">✓</div>`;
+      cont.appendChild(row);
+    });
+  }
 }
 
 function changeMonth(dir){
@@ -655,19 +712,25 @@ function changeMonth(dir){
 }
 
 // ── TODAY ──────────────────────────────────────────
+let viewingDate = null; // null = today
+
 function renderToday(){
   if(!document.getElementById('today-meals')) return;
   const today=new Date();today.setHours(0,0,0,0);
-  const idx=planIdx(today);
+  const viewDate=viewingDate||today;
+  const isToday=viewDate.getTime()===today.getTime();
+  const idx=planIdx(viewDate);
   const m=MEALS_DATA[idx];
-  const lun=getLunch(today);
-  const ds=dateStr(today);
-  const dow=today.getDay();
+  const lun=getLunch(viewDate);
+  const ds=dateStr(viewDate);
+  const dow=viewDate.getDay();
 
-  document.getElementById('today-title').textContent=DS[dow]+', '+today.getDate()+' '+MS[today.getMonth()];
-  document.getElementById('today-sub').textContent='Cycle day '+(idx+1)+' of 14';
+  document.getElementById('today-title').textContent=isToday
+    ? DS[dow]+', '+viewDate.getDate()+' '+MS[viewDate.getMonth()]
+    : DF[dow]+' '+viewDate.getDate()+' '+MS[viewDate.getMonth()];
+  document.getElementById('today-sub').textContent=isToday?'Cycle day '+(idx+1)+' of 14':'Past day — '+dateStr(viewDate);
 
-  // Water
+  // Water (only for today)
   for(let i=0;i<5;i++){const g=document.getElementById('g'+i);if(g)g.className='glass'+(i<water?' full':'');}
 
   // Stats
@@ -677,31 +740,28 @@ function renderToday(){
 
   setStatGreen('st-meals',mealsDone>=3,mealsDone+'/3');
   setStatGreen('st-water',water>=5,water+'/5');
-  document.getElementById('st-workout').textContent=isGymDay?'gym':'rest';
+  const isCardioDay=['2','4'].includes(String(dow));
+  document.getElementById('st-workout').textContent=isGymDay?'gym':isCardioDay?'cardio':'rest';
   document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',false);
   setStatGreen('st-todos',pendingTodos===0&&todos.length>0,pendingTodos);
 
-  // Meals
+  // Meals — simple cards for all meals
   const meals=[
     {type:'Breakfast',key:'b_'+ds,n:BRK.n,c:BRK.c,p:BRK.p,carb:BRK.carb,icon:ICONS.apple},
     {type:'Lunch',    key:'l_'+ds,n:lun.n,c:lun.c,p:lun.p,carb:lun.carb,icon:ICONS.bowl},
     {type:'Dinner',   key:'d_'+ds,n:m.n,  c:m.c,  p:m.p,  carb:m.carb,  icon:ICONS.plate},
   ];
   const mw=document.getElementById('today-meals');mw.innerHTML='';
-
-  // Find today's dinner recipe
-  const dinnerRecipe=RECIPES.find(r=>r.n.toLowerCase().includes(m.n.substring(0,8).toLowerCase()));
+  // Only weekend lunches get expandable recipe card
   const hasLunRecipe=lun.i&&lun.i.length>0;
 
   meals.forEach((ml,mi)=>{
     const isDone=!!doneMeals[ml.key];
-    // Determine if this meal has an expandable recipe
     const isLunch=ml.type==='Lunch';
-    const isDinner=ml.type==='Dinner';
-    const recipe=isDinner?dinnerRecipe:(isLunch&&hasLunRecipe?lun:null);
+    const recipe=isLunch&&hasLunRecipe?lun:null;
 
     if(recipe){
-      // Expandable card
+      // Expandable recipe card
       const card=document.createElement('div');
       card.className='recipe-item fi open';card.style.marginBottom='6px';card.style.animationDelay=(mi*.04)+'s';
       const macroStr=`${ml.c} kcal · ${ml.p}g protein · ${ml.carb}g carbs`;
@@ -759,8 +819,26 @@ function renderToday(){
       document.getElementById('st-workout').textContent=isGymDay?'gym':'rest';
       document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',allDone);
     }
+  } else if(['2','4'].includes(String(dow))){
+    const planDay=idx<7?1:2;
+    const session=GYM_PLAN.find(s=>s.week===planDay&&s.day===DS[dow]);
+    if(session){
+      const hdr=document.createElement('div');hdr.style='font-size:11px;font-weight:600;color:var(--ink2);padding:2px 0 6px;';
+      hdr.textContent=session.label+' — '+session.focus;wc.appendChild(hdr);
+      let allDone=true;
+      session.exercises.forEach(ex=>{
+        const key='ex_'+ex.name.replace(/\W/g,'_')+'_'+ds;
+        const isDone=!!doneItems[key];
+        if(!isDone) allDone=false;
+        const row=document.createElement('div');row.className='mini-item'+(isDone?' done':'');
+        row.innerHTML=`<div class="mini-dot" style="background:var(--teal)"></div><div class="mini-title">${ex.name} <span style="color:var(--ink3);font-size:10px">${ex.reps}</span></div><button class="mini-check${isDone?' on':''}" onclick="togExercise('${key}',this)">${isDone?'✓':''}</button>`;
+        wc.appendChild(row);
+      });
+      document.getElementById('st-workout').textContent='cardio';
+      document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',allDone);
+    }
   } else {
-    wc.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0">Rest day — enjoy the recovery</div>';
+    wc.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0">Rest day — Sat & Sun</div>';
   }
 
   // Todos preview (pending only, max 3)
@@ -798,11 +876,34 @@ function togMeal(key,btn){
   if(document.querySelector('#view-cal.active')) renderCalendar();
 }
 
-function togExercise(key,btn){
+function togMealCal(key,btn){
+  doneMeals[key]=!doneMeals[key];ss('hp_done',doneMeals);
+  const done=doneMeals[key];
+  btn.style.background=done?'var(--accent)':'transparent';
+  btn.style.borderColor=done?'var(--accent)':'var(--border)';
+  btn.style.color=done?'#fff':'transparent';
+  btn.textContent=done?'✓':'';
+  btn.previousElementSibling.style.background=done?'var(--accent)':'var(--border)';
+  renderCalendar();
+  if(document.querySelector('#view-today.active')) renderToday();
+}
+
+function togExerciseCal(key,btn){
   doneItems[key]=!doneItems[key];ss('hp_done_items',doneItems);
-  btn.classList.toggle('on');btn.textContent=btn.classList.contains('on')?'✓':'';
-  btn.classList.add('pop');setTimeout(()=>btn.classList.remove('pop'),300);
-  btn.closest('.mini-item').classList.toggle('done',doneItems[key]);
+  const done=doneItems[key];
+  btn.style.background=done?'var(--purple)':'transparent';
+  btn.style.borderColor=done?'var(--purple)':'var(--border)';
+  btn.style.color=done?'#fff':'transparent';
+  btn.textContent=done?'✓':'';
+  btn.previousElementSibling.style.background=done?'var(--purple)':'var(--border)';
+}
+
+function openDayInToday(){
+  viewingDate=new Date(calSelDate.getFullYear(),calSelDate.getMonth(),calSelDate.getDate());
+  showView('today');
+}
+
+function togExercise(key,btn){
   renderToday();
 }
 
@@ -989,7 +1090,7 @@ function renderWorkoutBody(){
       });body.appendChild(list);
     });
     const note=document.createElement('div');note.style='padding:0 22px 12px;font-size:12px;color:var(--ink3);line-height:1.5;';
-    note.textContent='Rest: Tue, Thu, Sat, Sun. Target 2g protein per kg. Add weight when all sets complete with good form.';
+    note.textContent='Gym: Mon, Wed, Fri. Cardio: Tue, Thu. Rest: Sat, Sun. Target 2g protein per kg bodyweight.';
     body.appendChild(note);
   } else {
     GYM_PLAN.forEach(session=>{
@@ -1074,7 +1175,7 @@ function showView(name){
   document.getElementById('view-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if(name==='cal') renderCalendar();
-  else if(name==='today') renderToday();
+  else if(name==='today'){viewingDate=null;renderToday();}
   else if(name==='todo') renderTodoList();
   else if(name==='diet') renderDietBody();
   else if(name==='workout') renderWorkoutBody();
