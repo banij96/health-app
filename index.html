@@ -414,20 +414,20 @@ const MS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec
 const MF=['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 const MEALS_DATA=[
-  {d:'Mon',w:1,n:'Spinach, mushroom & bacon pasta',c:520,p:22,carb:68},
-  {d:'Tue',w:1,n:'Chicken & spinach omelette',c:430,p:42,carb:28},
-  {d:'Wed',w:1,n:'Gyoza with veg & brown rice',c:480,p:24,carb:72},
-  {d:'Thu',w:1,n:'Mushroom cheese omelette',c:380,p:22,carb:26},
-  {d:'Fri',w:1,n:'Dumplings with veg & noodles',c:460,p:20,carb:66},
-  {d:'Sat',w:1,n:'Upgraded frozen pizza',c:620,p:24,carb:72},
-  {d:'Sun',w:1,n:'Chicken egg fried rice',c:490,p:28,carb:62},
-  {d:'Mon',w:2,n:'Chicken curry & brown rice',c:520,p:38,carb:58},
-  {d:'Tue',w:2,n:'Red lentil soup & seeded bread',c:380,p:22,carb:52},
-  {d:'Wed',w:2,n:'Tuna pasta & sweetcorn',c:480,p:34,carb:62},
-  {d:'Thu',w:2,n:'Prawn stir-fry & noodles',c:420,p:32,carb:48},
-  {d:'Fri',w:2,n:'Chicken fajita wrap',c:490,p:36,carb:46},
-  {d:'Sat',w:2,n:'Beef chilli & brown rice',c:560,p:38,carb:54},
-  {d:'Sun',w:2,n:'Salmon, sweet potato & broccoli',c:520,p:40,carb:38},
+  {id:'m1', d:'Mon',w:1,n:'Spinach, mushroom & bacon pasta',c:520,p:22,carb:68},
+  {id:'m2', d:'Tue',w:1,n:'Chicken & spinach omelette',c:430,p:42,carb:28},
+  {id:'m3', d:'Wed',w:1,n:'Gyoza with veg & brown rice',c:480,p:24,carb:72},
+  {id:'m4', d:'Thu',w:1,n:'Mushroom cheese omelette',c:380,p:22,carb:26},
+  {id:'m5', d:'Fri',w:1,n:'Dumplings with veg & noodles',c:460,p:20,carb:66},
+  {id:'m6', d:'Sat',w:1,n:'Upgraded frozen pizza',c:620,p:24,carb:72},
+  {id:'m7', d:'Sun',w:1,n:'Chicken egg fried rice',c:490,p:28,carb:62},
+  {id:'m8', d:'Mon',w:2,n:'Chicken curry & brown rice',c:520,p:38,carb:58},
+  {id:'m9', d:'Tue',w:2,n:'Red lentil soup & seeded bread',c:380,p:22,carb:52},
+  {id:'m10',d:'Wed',w:2,n:'Tuna pasta & sweetcorn',c:480,p:34,carb:62},
+  {id:'m11',d:'Thu',w:2,n:'Prawn stir-fry & noodles',c:420,p:32,carb:48},
+  {id:'m12',d:'Fri',w:2,n:'Chicken fajita wrap',c:490,p:36,carb:46},
+  {id:'m13',d:'Sat',w:2,n:'Beef chilli & brown rice',c:560,p:38,carb:54},
+  {id:'m14',d:'Sun',w:2,n:'Salmon, sweet potato & broccoli',c:520,p:40,carb:38},
 ];
 const BRK={n:'Apple, banana & water',c:180,p:2,carb:45};
 const LUN_WD={n:'Tesco meal deal',c:420,p:28,carb:42};
@@ -447,20 +447,20 @@ function getLunch(date){
 }
 
 const RECIPES=[
-  {w:1,n:'Spinach Mushroom Bacon Pasta',t:'20 min',i:[['Wholegrain pasta','180g'],['Back bacon','3 rashers'],['Mushrooms','150g'],['Spinach','80g'],['Pesto','2 tbsp']],s:['Boil pasta 10–12 min','Fry bacon, chop','Add mushrooms 3 min','Add spinach 1 min','Combine, stir in pesto'],cal:520,p:22,carb:68},
-  {w:1,n:'Chicken & Spinach Omelette',t:'15 min',i:[['Eggs','3'],['Chicken','150g'],['Spinach','60g'],['Toast','2 slices']],s:['Whisk eggs','Pour into hot pan','Add chicken & spinach','Fold, cook 1–2 min','Serve with toast'],cal:430,p:42,carb:28},
-  {w:1,n:'Gyoza with Veg & Brown Rice',t:'20 min',i:[['Gyoza','10 pieces'],['Frozen veg','200g'],['Brown rice','180g dry'],['Soy sauce','2 tbsp']],s:['Cook brown rice 18 min','Pan fry gyoza 2 min each side','Steam 3 min','Microwave veg','Plate up, drizzle soy'],cal:480,p:24,carb:72},
-  {w:1,n:'Mushroom Cheese Omelette',t:'12 min',i:[['Eggs','3'],['Mushrooms','150g'],['Grated cheese','40g'],['Toast','2 slices']],s:['Fry mushrooms 3 min','Whisk eggs, pour in','Set 1–2 min, add mushrooms & cheese','Fold, cook 1 min','Serve with toast'],cal:380,p:22,carb:26},
-  {w:1,n:'Dumplings with Veg & Noodles',t:'15 min',i:[['Dumplings','12 pieces'],['Noodles','150g'],['Mixed veg','200g'],['Soy sauce','2 tbsp']],s:['Cook noodles','Cook dumplings per pack','Microwave veg','Combine, drizzle soy'],cal:460,p:20,carb:66},
-  {w:1,n:'Upgraded Frozen Pizza',t:'15 min',i:[['Frozen pizza','1'],['Spinach','60g'],['Grated cheese','30g']],s:['Preheat oven per pack','Add spinach and extra cheese','Bake per instructions'],cal:620,p:24,carb:72},
-  {w:1,n:'Chicken Egg Fried Rice',t:'20 min',i:[['Eggs','2'],['Cooked chicken','150g'],['Brown rice','180g dry'],['Mixed veg','150g'],['Soy sauce','2 tbsp']],s:['Cook and cool brown rice','Fry eggs, scramble loosely','Add chicken, veg, rice','Stir fry 3 min, add soy'],cal:490,p:28,carb:62},
-  {w:2,n:'Chicken Curry & Brown Rice',t:'30 min',i:[['Chicken breast','300g'],['Tinned tomatoes','400g'],['Onion','1'],['Curry powder','2 tbsp'],['Brown rice','180g dry']],s:['Cook rice 18–20 min','Fry onion 3 min','Add garlic & curry powder','Add chicken 5 min','Simmer with tomatoes 15 min'],cal:520,p:38,carb:58},
-  {w:2,n:'Red Lentil Soup & Seeded Bread',t:'30 min',i:[['Red lentils','200g'],['Tomatoes','400g'],['Onion','1'],['Carrots','2'],['Stock cube','1'],['Seeded bread','2 slices']],s:['Fry onion & carrot 5 min','Add lentils, tomatoes, water, stock','Simmer 20 min','Stir — thickens naturally'],cal:380,p:22,carb:52},
-  {w:2,n:'Tuna Pasta & Sweetcorn',t:'15 min',i:[['Pasta','180g'],['Tuna','145g'],['Sweetcorn','200g'],['Spinach','60g']],s:['Boil pasta','Drain tuna & sweetcorn','Mix with oil & lemon','Stir in tuna, sweetcorn, spinach'],cal:480,p:34,carb:62},
-  {w:2,n:'Prawn Stir-Fry & Noodles',t:'15 min',i:[['Prawns','200g'],['Noodles','150g'],['Mixed veg','200g'],['Soy sauce','3 tbsp']],s:['Cook noodles','Fry garlic, add prawns 2 min','Add veg 3 min','Toss with noodles + soy'],cal:420,p:32,carb:48},
-  {w:2,n:'Chicken Fajita Wrap',t:'20 min',i:[['Chicken','300g strips'],['Wraps','2'],['Peppers','2'],['Onion','1'],['Spices','1 tsp each']],s:['Coat chicken in spices','Fry 6–8 min','Fry peppers & onion','Warm wraps, fill, fold'],cal:490,p:36,carb:46},
-  {w:2,n:'Beef Chilli & Brown Rice',t:'35 min',i:[['Beef mince','500g'],['Kidney beans','400g'],['Tomatoes','400g'],['Onion','1'],['Spices','1 tsp each']],s:['Fry onion, brown mince','Add beans, tomatoes, spices','Simmer 20 min','Serve over rice — freeze extra'],cal:560,p:38,carb:54},
-  {w:2,n:'Salmon, Sweet Potato & Broccoli',t:'35 min',i:[['Salmon','2 fillets'],['Sweet potato','400g'],['Broccoli','1 head'],['Olive oil','2 tbsp']],s:['Oven 200C','Roast sweet potato 20 min','Add broccoli at 10 min','Season salmon, add final 15 min'],cal:520,p:40,carb:38},
+  {mid:'m1', t:'20 min',i:[['Wholegrain pasta','180g'],['Back bacon','3 rashers'],['Mushrooms','150g'],['Spinach','80g'],['Pesto','2 tbsp']],s:['Boil pasta 10–12 min','Fry bacon until crispy, chop','Add mushrooms, cook 3 min','Wilt in spinach 1 min','Drain pasta, combine with pesto and mix']},
+  {mid:'m2', t:'15 min',i:[['Eggs','3'],['Cooked chicken','150g'],['Spinach','60g'],['Wholegrain toast','2 slices']],s:['Shred or chop cooked chicken','Whisk eggs with salt & pepper','Pour into hot oiled pan','Add chicken and spinach when edges set','Fold omelette, cook 1 min, serve with toast']},
+  {mid:'m3', t:'20 min',i:[['Gyoza (frozen)','10–12 pieces'],['Frozen mixed veg','200g'],['Brown rice','180g dry'],['Soy sauce','2 tbsp'],['Sesame oil (opt)','1 tsp']],s:['Cook brown rice 18 min','Heat pan, add gyoza flat side down 2 min','Add splash of water, cover and steam 3 min','Microwave veg per pack','Plate rice, veg and gyoza, drizzle soy']},
+  {mid:'m4', t:'12 min',i:[['Eggs','3'],['Mushrooms','150g'],['Grated cheese','40g'],['Wholegrain toast','2 slices']],s:['Slice mushrooms, fry in butter 3 min','Whisk eggs, season well','Pour eggs into pan over mushrooms','When mostly set, add cheese on top','Fold and cook 30s, serve with toast']},
+  {mid:'m5', t:'15 min',i:[['Dumplings (frozen)','12 pieces'],['Egg noodles','150g'],['Mixed veg','200g'],['Soy sauce','2 tbsp']],s:['Cook noodles per pack, drain','Cook dumplings in pan with a little oil 3 min each side','Microwave veg','Combine noodles and veg, top with dumplings','Drizzle soy sauce to taste']},
+  {mid:'m6', t:'15 min',i:[['Frozen pizza','1'],['Fresh spinach','60g'],['Grated cheese','30g'],['Chilli flakes (opt)','pinch']],s:['Preheat oven per pizza pack instructions','Layer spinach over pizza base','Add extra cheese on top','Bake per instructions until golden','Finish with chilli flakes if desired']},
+  {mid:'m7', t:'20 min',i:[['Eggs','2'],['Cooked chicken','150g'],['Brown rice','180g dry'],['Frozen mixed veg','150g'],['Soy sauce','2 tbsp']],s:['Cook and cool rice (day-old rice works best)','Scramble eggs in wok, push aside','Add chicken and veg, stir fry 2 min','Add rice, break up and mix everything','Splash soy sauce, toss on high heat 2 min']},
+  {mid:'m8', t:'30 min',i:[['Chicken breast','300g'],['Tinned tomatoes','400g'],['Onion','1'],['Garlic','3 cloves'],['Curry powder','2 tbsp'],['Brown rice','180g dry']],s:['Cook brown rice 18–20 min','Dice onion, fry 3 min until soft','Add garlic and curry powder, cook 1 min','Cube chicken, add and cook 5 min','Pour in tomatoes, simmer 15 min, serve over rice']},
+  {mid:'m9', t:'30 min',i:[['Red lentils','200g'],['Tinned tomatoes','400g'],['Onion','1'],['Carrots','2'],['Chicken stock cube','1'],['Seeded bread','2 slices']],s:['Dice onion and carrot, fry 5 min','Rinse lentils and add to pan','Add tomatoes, 600ml water, and crumbled stock cube','Simmer 20 min stirring occasionally','It thickens naturally — serve with bread']},
+  {mid:'m10',t:'15 min',i:[['Pasta','180g'],['Tinned tuna','145g'],['Tinned sweetcorn','200g'],['Fresh spinach','60g'],['Olive oil','1 tbsp'],['Lemon','half']],s:['Boil pasta until al dente, drain (save a splash of water)','Drain tuna and sweetcorn','Mix pasta with olive oil and lemon juice','Stir in tuna, sweetcorn and spinach','Add pasta water if too dry, season and serve']},
+  {mid:'m11',t:'15 min',i:[['Prawns (cooked)','200g'],['Egg noodles','150g'],['Mixed veg','200g'],['Soy sauce','3 tbsp'],['Garlic','2 cloves'],['Sesame oil (opt)','1 tsp']],s:['Cook noodles per pack, drain','Fry garlic in hot wok 30s','Add veg and stir fry 2 min','Add prawns and heat through 1–2 min','Toss with noodles, soy and sesame oil']},
+  {mid:'m12',t:'20 min',i:[['Chicken breast','300g strips'],['Flour tortilla wraps','2'],['Peppers (mixed)','2'],['Onion','1'],['Smoked paprika','1 tsp'],['Cumin','1 tsp'],['Chilli powder','0.5 tsp']],s:['Coat chicken strips in spices with a little oil','Fry chicken on high heat 6–8 min until cooked','Slice and fry peppers and onion 3 min','Warm wraps in dry pan or microwave 20s','Fill with chicken and veg, fold and serve']},
+  {mid:'m13',t:'35 min',i:[['Beef mince','500g'],['Kidney beans','400g tin'],['Tinned tomatoes','400g'],['Onion','1'],['Garlic','3 cloves'],['Chilli powder','1 tsp'],['Cumin','1 tsp'],['Brown rice','180g dry']],s:['Cook rice separately','Fry onion and garlic until soft','Brown the mince, drain excess fat','Add spices, cook 1 min','Add tomatoes and beans, simmer 20 min — freeze half for later']},
+  {mid:'m14',t:'35 min',i:[['Salmon fillets','2'],['Sweet potato','400g'],['Broccoli','1 head'],['Olive oil','2 tbsp'],['Garlic powder','pinch'],['Salt & pepper','to taste']],s:['Preheat oven to 200°C','Cube sweet potato, toss in oil and roast 20 min','Cut broccoli into florets, add to tray at 10 min mark','Season salmon with oil, garlic powder, salt','Add salmon to tray for final 12–15 min']},
 ];
 
 const GYM_PLAN=[
@@ -671,9 +671,13 @@ function renderCalDayEvents(){
   // Water
   const waterVal=gs('hp_water_'+ds,0);
   const wRow=document.createElement('div');wRow.className='cal-ev-row';
-  const wFill=Math.min(5,waterVal);
-  const glasses='◉'.repeat(wFill)+'○'.repeat(5-wFill);
-  wRow.innerHTML=`<div class="cal-ev-dot" style="background:${waterVal>=5?'var(--blue)':'var(--border)'}"></div><div class="cal-ev-name" style="display:flex;align-items:center;gap:8px">Water <span style="font-size:13px;letter-spacing:2px;color:${waterVal>=5?'var(--blue)':'var(--ink3)'}">${glasses}</span></div><div style="font-size:11px;color:var(--ink3)">${waterVal}/5</div>`;
+  wRow.style='flex-wrap:wrap;gap:6px;';
+  let glassBtns='';
+  for(let gi=0;gi<5;gi++){
+    const full=gi<waterVal;
+    glassBtns+=`<button onclick="togWaterCal('${ds}',${gi},this)" style="width:28px;height:28px;border-radius:4px 4px 6px 6px;border:1.5px solid ${full?'var(--blue)':'var(--border)'};background:${full?'var(--blue)':'transparent'};cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;"></button>`;
+  }
+  wRow.innerHTML=`<div class="cal-ev-dot" style="background:${waterVal>=5?'var(--blue)':'var(--border)'}"></div><div class="cal-ev-name">Water</div><div style="display:flex;gap:4px;align-items:center">${glassBtns}<span style="font-size:11px;color:var(--ink3);margin-left:2px">${waterVal}/5</span></div>`;
   cont.appendChild(wRow);
 
   // Meals with tickboxes
@@ -945,6 +949,15 @@ function togExercise(key,btn){
   if(document.querySelector('#view-cal.active')) renderCalendar();
 }
 
+function togWaterCal(ds,idx,btn){
+  let val=gs('hp_water_'+ds,0);
+  val=val===idx+1?idx:idx+1;
+  ss('hp_water_'+ds,val);
+  if(ds===todayStr()){water=val;}
+  renderCalDayEvents();
+  renderCalendar();
+}
+
 function togDailyTask(key,btn){
   doneItems[key]=!doneItems[key];ss('hp_done_items',doneItems);
   btn.classList.toggle('on');btn.textContent=btn.classList.contains('on')?'✓':'';
@@ -1054,7 +1067,7 @@ function renderDietBody(){
         const gi=(wk-1)*7+i;
         const dayDate=dateForIdx(gi);
         const lun=getLunch(dayDate);
-        const recipe=RECIPES.find(r=>r.w===wk&&r.n.toLowerCase().includes(m.n.substring(0,8).toLowerCase()));
+        const recipe=RECIPES.find(r=>r.mid===m.id);
         const ds=dateStr(dayDate);
         const isDone=!!doneMeals['d_'+ds];
         const dow=dayDate.getDay();
