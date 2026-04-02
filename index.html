@@ -581,7 +581,6 @@ let calViewDate=new Date(new Date().getFullYear(),new Date().getMonth(),1);
 let calSelDate=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
 let dietTab='plan';
 let woTab='wplan';
-let todoSelColour='work';
 const C_DOT={work:'#4a7c9e',accent:'var(--accent)',warm:'var(--warm)',blue:'var(--blue)',purple:'var(--purple)',red:'var(--red)',teal:'var(--teal)',gold:'var(--gold)',slate:'var(--slate)'};
 
 // ── CALENDAR ───────────────────────────────────────
@@ -613,13 +612,13 @@ function getDayCompletionRatio(date){
     if(session) exKeys=session.exercises.map(ex=>'ex_'+ex.name.replace(/\W/g,'_')+'_'+ds);
   }
 
-  const total=mKeys.length + dtKeys.length + 5 + (exKeys.length>0?1:0); // 5 = individual glasses
+  const total=mKeys.length + dtKeys.length + 5 + exKeys.length; // each exercise counts
   if(total===0) return 0;
   let done=mKeys.filter(k=>!!doneMeals[k]).length;
   done+=todosOnDay.filter(t=>t.done).length;
   done+=dtKeys.filter(k=>!!doneItems[k]).length;
-  done+=Math.min(5,waterVal); // each glass counts
-  if(exKeys.length>0&&exKeys.every(k=>!!doneItems[k])) done+=1;
+  done+=Math.min(5,waterVal);
+  done+=exKeys.filter(k=>!!doneItems[k]).length; // each exercise individually
   return done/total;
 }
 
@@ -768,8 +767,10 @@ function renderToday(){
     : DF[dow]+' '+viewDate.getDate()+' '+MS[viewDate.getMonth()];
   document.getElementById('today-sub').textContent=isToday?'Cycle day '+(idx+1)+' of 14':'Past day — '+dateStr(viewDate);
 
-  // Water (only for today)
-  for(let i=0;i<5;i++){const g=document.getElementById('g'+i);if(g)g.className='glass'+(i<water?' full':'');}
+  // Water — show current viewing date's water
+  const viewWater=isToday?water:gs('hp_water_'+ds,0);
+  for(let i=0;i<5;i++){const g=document.getElementById('g'+i);if(g)g.className='glass'+(i<viewWater?' full':'');}
+  setStatGreen('st-water',viewWater>=5,viewWater+'/5');
 
   // Stats
   const mealsDone=['b_'+ds,'l_'+ds,'d_'+ds].filter(k=>!!doneMeals[k]).length;
@@ -777,10 +778,8 @@ function renderToday(){
   const pendingTodos=todos.filter(t=>!t.done).length;
 
   setStatGreen('st-meals',mealsDone>=3,mealsDone+'/3');
-  setStatGreen('st-water',water>=5,water+'/5');
   const isCardioDay=['2','4'].includes(String(dow));
-  document.getElementById('st-workout').textContent=isGymDay?'gym':isCardioDay?'cardio':'rest';
-  document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',false);
+  // workout stat updated after session render below
   setStatGreen('st-todos',pendingTodos===0&&todos.length>0,pendingTodos);
 
   // Meals — simple cards for all meals
@@ -837,9 +836,12 @@ function renderToday(){
     }
   });
 
-  // Workout
+  // Workout — unified gym + cardio
   const wc=document.getElementById('today-workout-col');wc.innerHTML='';
-  if(isGymDay){
+  const isActiveDay=isGymDay||isCardioDay;
+  const dotColour=isGymDay?'var(--purple)':'var(--teal)';
+  const woLabel=isGymDay?'gym':'cardio';
+  if(isActiveDay){
     const planDay=idx<7?1:2;
     const session=GYM_PLAN.find(s=>s.week===planDay&&s.day===DS[dow]);
     if(session){
@@ -851,41 +853,22 @@ function renderToday(){
         const isDone=!!doneItems[key];
         if(!isDone) allDone=false;
         const row=document.createElement('div');row.className='mini-item'+(isDone?' done':'');
-        row.innerHTML=`<div class="mini-dot" style="background:var(--purple)"></div><div class="mini-title">${ex.name} <span style="color:var(--ink3);font-size:10px">${ex.sets}×${ex.reps}</span></div><button class="mini-check${isDone?' on':''}" onclick="togExercise('${key}',this)">${isDone?'✓':''}</button>`;
+        const repsLabel=ex.sets>1?ex.sets+'×'+ex.reps:ex.reps;
+        row.innerHTML=`<div class="mini-dot" style="background:${dotColour}"></div><div class="mini-title">${ex.name} <span style="color:var(--ink3);font-size:10px">${repsLabel}</span></div><button class="mini-check${isDone?' on':''}" onclick="togExercise('${key}',this)">${isDone?'✓':''}</button>`;
         wc.appendChild(row);
       });
-      document.getElementById('st-workout').textContent=isGymDay?'gym':'rest';
-      document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',allDone);
-    }
-  } else if(['2','4'].includes(String(dow))){
-    const planDay=idx<7?1:2;
-    const session=GYM_PLAN.find(s=>s.week===planDay&&s.day===DS[dow]);
-    if(session){
-      const hdr=document.createElement('div');hdr.style='font-size:11px;font-weight:600;color:var(--ink2);padding:2px 0 6px;';
-      hdr.textContent=session.label+' — '+session.focus;wc.appendChild(hdr);
-      let allDone=true;
-      session.exercises.forEach(ex=>{
-        const key='ex_'+ex.name.replace(/\W/g,'_')+'_'+ds;
-        const isDone=!!doneItems[key];
-        if(!isDone) allDone=false;
-        const row=document.createElement('div');row.className='mini-item'+(isDone?' done':'');
-        row.innerHTML=`<div class="mini-dot" style="background:var(--teal)"></div><div class="mini-title">${ex.name} <span style="color:var(--ink3);font-size:10px">${ex.reps}</span></div><button class="mini-check${isDone?' on':''}" onclick="togExercise('${key}',this)">${isDone?'✓':''}</button>`;
-        wc.appendChild(row);
-      });
-      document.getElementById('st-workout').textContent='cardio';
-      document.getElementById('st-workout').closest('.stat-box').classList.toggle('green',allDone);
+      setStatGreen('st-workout',allDone,woLabel);
     }
   } else {
-    wc.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0">Rest day — Sat & Sun</div>';
+    wc.innerHTML='<div style="font-size:11px;color:var(--ink3);padding:4px 0">Rest day</div>';
+    const el=document.getElementById('st-workout');if(el){el.textContent='rest';el.closest('.stat-box').classList.remove('green');}
   }
 
   // Daily tasks
   const dtw=document.getElementById('today-daily-tasks');if(dtw){dtw.innerHTML='';
-  let allDtDone=true;
   DAILY_TASKS.forEach(t=>{
     const key=t.id+'_'+ds;
     const isDone=!!doneItems[key];
-    if(!isDone) allDtDone=false;
     const row=document.createElement('div');row.className='mini-item'+(isDone?' done':'');
     row.innerHTML=`<div class="mini-dot" style="background:${C_DOT[t.colour]||'#999'}"></div><div class="mini-title">${t.title}</div><button class="mini-check${isDone?' on':''}" onclick="togDailyTask('${key}',this)">${isDone?'✓':''}</button>`;
     dtw.appendChild(row);
@@ -994,21 +977,14 @@ function addGlass(){if(water<5){water++;ss('hp_water_'+todayStr(),water);renderT
 // ── TO DO ──────────────────────────────────────────
 function openTodoModal(){
   document.getElementById('todo-inp').value='';
-  document.querySelectorAll('#todo-swatches .cswatch').forEach((s,i)=>s.classList.toggle('sel',i===0));
-  todoSelColour='work';
   document.getElementById('todo-overlay').classList.add('show');
   setTimeout(()=>document.getElementById('todo-inp').focus(),300);
-}
-
-function pickTodoC(el){
-  document.querySelectorAll('#todo-swatches .cswatch').forEach(s=>s.classList.remove('sel'));
-  el.classList.add('sel');todoSelColour=el.dataset.c;
 }
 
 function saveTodo(){
   const title=document.getElementById('todo-inp').value.trim();
   if(!title){showToast('Add a title','');return;}
-  todos.push({id:'t_'+Date.now(),title,colour:todoSelColour,done:false,doneDate:null});
+  todos.push({id:'t_'+Date.now(),title,colour:'accent',done:false,doneDate:null});
   ss('hp_todos',todos);
   closeOvl('todo-overlay');
   renderTodoList();
