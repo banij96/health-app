@@ -592,22 +592,35 @@ function completionColour(ratio){
 }
 
 function getDayCompletionRatio(date){
-  const cs=cycleStart();
-  const local=new Date(date.getFullYear(),date.getMonth(),date.getDate(),12,0,0);
-  const daysSince=Math.floor((local-cs)/86400000);
+  const today=new Date();today.setHours(23,59,59);
+  // Don't colour future days
+  if(date>today) return 0;
   const ds=dateStr(date);
+  const dow=date.getDay();
   const mKeys=['b_'+ds,'l_'+ds,'d_'+ds];
   const todosOnDay=todos.filter(t=>t.doneDate===ds);
   const dtKeys=DAILY_TASKS.map(t=>t.id+'_'+ds);
-  // Water counts as done if >=5 glasses
-  const waterKey='hp_water_'+ds;
-  const waterVal=gs(waterKey,0);
-  const total=mKeys.length+todosOnDay.length+dtKeys.length+1; // +1 for water
+  const waterVal=gs('hp_water_'+ds,0);
+
+  // Workout exercises for this day
+  const idx=planIdx(date);
+  const isGymDay=['1','3','5'].includes(String(dow));
+  const isCardioDay=['2','4'].includes(String(dow));
+  let exKeys=[];
+  if(isGymDay||isCardioDay){
+    const planDay=idx<7?1:2;
+    const session=GYM_PLAN.find(s=>s.week===planDay&&s.day===DS[dow]);
+    if(session) exKeys=session.exercises.map(ex=>'ex_'+ex.name.replace(/\W/g,'_')+'_'+ds);
+  }
+
+  const total=mKeys.length + dtKeys.length + 1 + (exKeys.length>0?1:0);
   if(total===0) return 0;
   let done=mKeys.filter(k=>!!doneMeals[k]).length;
   done+=todosOnDay.filter(t=>t.done).length;
   done+=dtKeys.filter(k=>!!doneItems[k]).length;
   done+=waterVal>=5?1:0;
+  // Workout counts as 1 point if all exercises ticked
+  if(exKeys.length>0&&exKeys.every(k=>!!doneItems[k])) done+=1;
   return done/total;
 }
 
