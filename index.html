@@ -586,8 +586,9 @@ const C_DOT={work:'#4a7c9e',accent:'var(--accent)',warm:'var(--warm)',blue:'var(
 // ── CALENDAR ───────────────────────────────────────
 function completionColour(ratio){
   if(ratio<=0) return null;
-  const hue=Math.round(ratio*120);
-  return `hsl(${hue},55%,72%)`;
+  const boosted=Math.min(1,ratio*1.4);
+  const hue=Math.round(boosted*120);
+  return `hsl(${hue},60%,68%)`;
 }
 
 function getDayCompletionRatio(date){
@@ -597,7 +598,6 @@ function getDayCompletionRatio(date){
   const ds=dateStr(date);
   const dow=date.getDay();
   const mKeys=['b_'+ds,'l_'+ds,'d_'+ds];
-  const todosOnDay=todos.filter(t=>t.doneDate===ds);
   const dtKeys=DAILY_TASKS.map(t=>t.id+'_'+ds);
   const waterVal=gs('hp_water_'+ds,0);
 
@@ -612,13 +612,12 @@ function getDayCompletionRatio(date){
     if(session) exKeys=session.exercises.map(ex=>'ex_'+ex.name.replace(/\W/g,'_')+'_'+ds);
   }
 
-  const total=mKeys.length + dtKeys.length + 5 + exKeys.length; // each exercise counts
+  const total=mKeys.length + dtKeys.length + 5 + exKeys.length;
   if(total===0) return 0;
   let done=mKeys.filter(k=>!!doneMeals[k]).length;
-  done+=todosOnDay.filter(t=>t.done).length;
   done+=dtKeys.filter(k=>!!doneItems[k]).length;
   done+=Math.min(5,waterVal);
-  done+=exKeys.filter(k=>!!doneItems[k]).length; // each exercise individually
+  done+=exKeys.filter(k=>!!doneItems[k]).length;
   return done/total;
 }
 
