@@ -613,13 +613,12 @@ function getDayCompletionRatio(date){
     if(session) exKeys=session.exercises.map(ex=>'ex_'+ex.name.replace(/\W/g,'_')+'_'+ds);
   }
 
-  const total=mKeys.length + dtKeys.length + 1 + (exKeys.length>0?1:0);
+  const total=mKeys.length + dtKeys.length + 5 + (exKeys.length>0?1:0); // 5 = individual glasses
   if(total===0) return 0;
   let done=mKeys.filter(k=>!!doneMeals[k]).length;
   done+=todosOnDay.filter(t=>t.done).length;
   done+=dtKeys.filter(k=>!!doneItems[k]).length;
-  done+=waterVal>=5?1:0;
-  // Workout counts as 1 point if all exercises ticked
+  done+=Math.min(5,waterVal); // each glass counts
   if(exKeys.length>0&&exKeys.every(k=>!!doneItems[k])) done+=1;
   return done/total;
 }
