@@ -395,12 +395,9 @@ const C_DOT={work:'#4a7c9e',accent:'var(--accent)',warm:'var(--warm)',blue:'var(
 // ── CALENDAR ───────────────────────────────────────
 function completionColour(ratio){
   if(ratio<=0) return null;
-  // Full red(0°) → amber(40°) → green(120°), no boosting — raw ratio drives colour
-  // Each individual tick moves the colour noticeably
   const hue=Math.round(ratio*120);
-  // Saturation and lightness tuned for dark background visibility
-  const sat=60+Math.round(ratio*15); // 60% at start → 75% fully done
-  const lit=30+Math.round(ratio*18); // 30% at start → 48% fully done
+  const sat=35+Math.round(ratio*15);
+  const lit=45+Math.round(ratio*17);
   return `hsl(${hue},${sat}%,${lit}%)`;
 }
 
