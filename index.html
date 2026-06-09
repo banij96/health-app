@@ -97,7 +97,7 @@ html,body{height:100%;background:var(--bg);font-family:'Karla',sans-serif;color:
 .cal-month-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;}
 .cal-month-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--ink);}
 .cal-nav-btn{background:none;border:none;font-size:16px;color:var(--ink3);cursor:pointer;padding:3px 7px;}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;padding:0 12px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr) 26px;gap:2px;padding:0 12px;}
 .cal-dow{text-align:center;font-size:9px;font-weight:600;letter-spacing:.4px;color:var(--ink3);text-transform:uppercase;padding:3px 0;}
 .cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:7px;font-size:12px;font-weight:500;color:var(--ink2);cursor:pointer;flex-direction:column;gap:1px;position:relative;overflow:hidden;}
 .cal-cell.today{outline:3px solid var(--accent);outline-offset:-1px;font-weight:700;color:var(--accent);z-index:1;}
@@ -393,6 +393,37 @@ let calSelDate=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
 const C_DOT={work:'#4a7c9e',accent:'var(--accent)',warm:'var(--warm)',blue:'var(--blue)',purple:'var(--purple)',red:'var(--red)',teal:'var(--teal)',gold:'var(--gold)',slate:'var(--slate)'};
 
 // ── CALENDAR ───────────────────────────────────────
+function weekStarRatio(weekMonday){
+  // 4 tracked items per day: eat healthy, no fizzy, cardio, weights
+  // Full star at 20/28 ticks
+  const TRACKED=['diet_eat_','diet_fizzy_','wo_cardio_','wo_weights_'];
+  let ticks=0;
+  for(let i=0;i<7;i++){
+    const d=new Date(weekMonday);d.setDate(d.getDate()+i);
+    const ds=dateStr(d);
+    TRACKED.forEach(k=>{if(doneItems[k+ds]) ticks++;});
+  }
+  return Math.min(1, ticks/20);
+}
+
+function makeStarSvg(ratio,id){
+  const pct=Math.round(ratio*100);
+  const empty=ratio<=0;
+  const full=ratio>=1;
+  return `<svg viewBox="0 0 24 24" width="22" height="22">
+    <defs>
+      <clipPath id="sc${id}"><polygon points="12,1 14.6,8.6 22.5,8.6 16.2,13.4 18.8,21 12,16.5 5.2,21 7.8,13.4 1.5,8.6 9.4,8.6"/></clipPath>
+      <linearGradient id="sg${id}" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="${pct}%" stop-color="#d4a830"/>
+        <stop offset="${pct}%" stop-color="transparent"/>
+      </linearGradient>
+    </defs>
+    <polygon points="12,1 14.6,8.6 22.5,8.6 16.2,13.4 18.8,21 12,16.5 5.2,21 7.8,13.4 1.5,8.6 9.4,8.6"
+      fill="${empty?'none':'#1e1d1a'}" stroke="${empty?'#2a2925':'#3a3830'}" stroke-width="1.5"/>
+    ${!empty?`<rect x="0" y="0" width="24" height="24" fill="url(#sg${id})" clip-path="url(#sc${id})"/>`:''}
+    ${full?`<polygon points="12,1 14.6,8.6 22.5,8.6 16.2,13.4 18.8,21 12,16.5 5.2,21 7.8,13.4 1.5,8.6 9.4,8.6" fill="#d4a830"/>`:''}</svg>`;
+}
+
 function completionColour(ratio){
   if(ratio<=0) return null;
   const hue=Math.round(ratio*120);
@@ -439,13 +470,35 @@ function renderCalendar(){
   if(subEl) subEl.textContent='';
   const grid=document.getElementById('cal-grid');if(!grid)return;grid.innerHTML='';
   ['M','T','W','T','F','S','S'].forEach(x=>{const e=document.createElement('div');e.className='cal-dow';e.textContent=x;grid.appendChild(e);});
+  const starHdr=document.createElement('div');starHdr.className='cal-dow';starHdr.style='color:#3a3830;font-size:10px;text-align:center;';starHdr.textContent='★';grid.appendChild(starHdr);
   const first=new Date(d.getFullYear(),d.getMonth(),1);
   let sd=first.getDay();sd=(sd+6)%7;
   const dim=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();
   const dip=new Date(d.getFullYear(),d.getMonth(),0).getDate();
   const todayLocal=new Date();todayLocal.setHours(0,0,0,0);
   const selDs=dateStr(calSelDate);
+  // Track position in 8-col grid (7 days + star)
+  let colPos=sd; // 0=Mon...6=Sun, after sd padding cells
+  let starId=0;
+
+  // Helper: add star for the week starting on `weekMonday`
+  function addStarCell(weekMonday){
+    const sc=document.createElement('div');
+    sc.style='display:flex;align-items:center;justify-content:center;';
+    const today2=new Date();today2.setHours(0,0,0,0);
+    const isFuture=weekMonday>today2;
+    sc.innerHTML=isFuture?makeStarSvg(0,starId):makeStarSvg(weekStarRatio(weekMonday),starId);
+    starId++;
+    grid.appendChild(sc);
+  }
+
+  // Padding cells for partial first week
   for(let i=sd-1;i>=0;i--){const c=document.createElement('div');c.className='cal-cell other-month';c.innerHTML=`<span class="cal-num">${dip-i}</span>`;grid.appendChild(c);}
+
+  // If first week is partial, we still need a star at end of row
+  // sd padding cells + remaining days until Sunday
+  // colPos tracks how many cells rendered in current row (0-6)
+
   for(let day=1;day<=dim;day++){
     const cd=new Date(d.getFullYear(),d.getMonth(),day);
     const cdStr=dateStr(cd);
@@ -460,13 +513,29 @@ function renderCalendar(){
     c.innerHTML=fill+`<span class="cal-num" style="${numStyle}">${day}</span>`;
     c.addEventListener('click',(()=>{
       const dd=new Date(d.getFullYear(),d.getMonth(),day);
-      const dds=dateStr(dd);
       return()=>{calSelDate=new Date(dd);renderCalendar();renderCalDayEvents();};
     })());
     grid.appendChild(c);
+    colPos++;
+    // After Sunday (colPos=7), insert star then reset
+    if(colPos===7){
+      // Find Monday of this week
+      const sunDate=new Date(d.getFullYear(),d.getMonth(),day);
+      const mon=new Date(sunDate);mon.setDate(mon.getDate()-6);
+      addStarCell(mon);
+      colPos=0;
+    }
   }
+
+  // Trailing padding cells
   const rem=(sd+dim)%7===0?0:7-(sd+dim)%7;
   for(let i=1;i<=rem;i++){const c=document.createElement('div');c.className='cal-cell other-month';c.innerHTML=`<span class="cal-num">${i}</span>`;grid.appendChild(c);}
+  // Star for last partial week if it didn't end on Sunday
+  if(rem>0){
+    const lastDay=new Date(d.getFullYear(),d.getMonth(),dim);
+    const mon=new Date(lastDay);mon.setDate(mon.getDate()-((lastDay.getDay()+6)%7));
+    addStarCell(mon);
+  }
   renderCalDayEvents();
 }
 
